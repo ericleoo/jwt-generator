@@ -1,0 +1,23 @@
+{
+  "name": "jwt-generator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "generate": "node index.js",
+    "test": "node index.js"
+  },
+  "keywords": [
+    "jwt",
+    "token",
+    "mock",
+    "generator"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jsonwebtoken": "^9.0.3",
+    "nanoid": "^5.1.6"
+  }
+}
