@@ -15,7 +15,7 @@ pnpm install
 
 ### Generate a JWT
 
-This will print a JSON object with the random subject, JWT token, algorithm, and secret:
+This will print a JSON object with the random subject, JWT token, algorithm, secret, and the fully decoded token (header, payload, and signature):
 
 ```bash
 pnpm start
@@ -28,9 +28,21 @@ Example output:
 ```json
 {
   "subject": "randomSubjectIdHere",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhQmMxMjMiLCJpYXQiOjE3MDAwMDAwMDAsImV4cCI6MTcwMDAwMzYwMH0.abc123signature",
   "algorithm": "HS256",
-  "secret": "changeme-secret"
+  "secret": "changeme-secret",
+  "decoded": {
+    "header": {
+      "alg": "HS256",
+      "typ": "JWT"
+    },
+    "payload": {
+      "sub": "randomSubjectIdHere",
+      "iat": 1700000000,
+      "exp": 1700003600
+    },
+    "signature": "abc123signature"
+  }
 }
 ```
 
