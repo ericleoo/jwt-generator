@@ -7,6 +7,7 @@ require('dotenv').config();
 
 function generateJwt() {
   const subject = nanoid();
+  const issuer = process.env.JWT_ISSUER || 'jwt-generator';
 
   // Choose algorithm: HS256 (shared secret) or RS256 (private key + X.509 cert)
   const algorithm = process.env.JWT_ALG || 'HS256';
@@ -42,6 +43,7 @@ function generateJwt() {
     {
       sub: subject,
       iat: Math.floor(Date.now() / 1000),
+      iss: issuer,
     },
     signingKey,
     {
@@ -55,6 +57,7 @@ function generateJwt() {
   return {
     token,
     subject,
+    issuer,
     algorithm,
     decoded,
     ...meta,
