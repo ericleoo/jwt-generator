@@ -1,6 +1,6 @@
 ## jwt-generator
 
-Simple pnpm-based Node.js project that generates a JSON Web Token (JWT) with a random subject. The resulting token data can be shared with or consumed by another system.
+Simple pnpm-based Node.js project that generates a JSON Web Token (JWT) with a subject (random by default, or fixed via environment variable). The resulting token data can be shared with or consumed by another system.
 
 ### Requirements
 
@@ -64,12 +64,16 @@ The other system should verify the token using:
 
 This project automatically loads a `.env` file in the project root (via `dotenv`) so you don’t have to prefix every command with environment variables.
 
+You can optionally fix the subject claim instead of using a random value by setting `JWT_SUBJECT`.
+
 1. For HS256 (shared secret), create a `.env` file:
 
    ```bash
    echo 'JWT_ALG=HS256' >> .env
    echo 'JWT_ISSUER=my-issuer' >> .env
    echo 'JWT_SECRET=my-shared-secret' >> .env
+   # Optional: set a fixed subject claim
+   echo 'JWT_SUBJECT=my-subject' >> .env
    # Optional: set an audience claim
    echo 'JWT_AUDIENCE=my-audience' >> .env
    ```
@@ -80,6 +84,8 @@ This project automatically loads a `.env` file in the project root (via `dotenv`
    echo 'JWT_ALG=RS256' >> .env
    echo 'JWT_PRIVATE_KEY_FILE=./jwt-private.pem' >> .env
    echo 'JWT_CERT_FILE=./jwt-cert.pem' >> .env
+   # Optional: set a fixed subject claim
+   echo 'JWT_SUBJECT=my-subject' >> .env
    # Optional: set an audience claim
    echo 'JWT_AUDIENCE=my-audience' >> .env
    ```

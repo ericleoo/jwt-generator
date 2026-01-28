@@ -6,7 +6,7 @@ const { nanoid } = require('nanoid');
 require('dotenv').config();
 
 function generateJwt() {
-  const subject = nanoid();
+  const subject = process.env.JWT_SUBJECT || nanoid();
   const issuer = process.env.JWT_ISSUER || 'jwt-generator';
   const audience = process.env.JWT_AUDIENCE;
 
