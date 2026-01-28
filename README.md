@@ -15,7 +15,7 @@ pnpm install
 
 ### Generate a JWT (default HS256 / shared secret)
 
-This will print a JSON object with the random subject, JWT token, algorithm, secret, and the fully decoded token (header, payload, and signature):
+This will print a JSON object with the random subject, issuer, JWT token, algorithm, secret, and the fully decoded token (header, payload, and signature). If `JWT_ISSUER` is set, it will override the default issuer (`jwt-generator`). If `JWT_AUDIENCE` is set, the audience will also be included.
 
 ```bash
 pnpm start
@@ -28,6 +28,7 @@ Example output:
 ```json
 {
   "subject": "randomSubjectIdHere",
+  "issuer": "jwt-generator",
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhQmMxMjMiLCJpYXQiOjE3MDAwMDAwMDAsImV4cCI6MTcwMDAwMzYwMH0.abc123signature",
   "algorithm": "HS256",
   "secret": "changeme-secret",
@@ -39,6 +40,7 @@ Example output:
     "payload": {
       "sub": "randomSubjectIdHere",
       "iat": 1700000000,
+      "iss": "jwt-generator",
       "exp": 1700003600
     },
     "signature": "abc123signature"
@@ -47,10 +49,10 @@ Example output:
 ```
 
 ### Configuring the shared secret
-By default the secret is `changeme-secret`. To use a custom shared secret (for example, one agreed with another system that will verify the JWT), set the `JWT_SECRET` environment variable:
+By default the secret is `changeme-secret` and the issuer is `jwt-generator`. To use a custom shared secret (for example, one agreed with another system that will verify the JWT), set the `JWT_SECRET` environment variable. To override the issuer, set `JWT_ISSUER`:
 
 ```bash
-JWT_SECRET="my-shared-secret" pnpm start
+JWT_SECRET="my-shared-secret" JWT_ISSUER="my-issuer" pnpm start
 ```
 
 The other system should verify the token using:
@@ -66,7 +68,10 @@ This project automatically loads a `.env` file in the project root (via `dotenv`
 
    ```bash
    echo 'JWT_ALG=HS256' >> .env
+   echo 'JWT_ISSUER=my-issuer' >> .env
    echo 'JWT_SECRET=my-shared-secret' >> .env
+   # Optional: set an audience claim
+   echo 'JWT_AUDIENCE=my-audience' >> .env
    ```
 
 2. For RS256, you can also configure everything in `.env`:
@@ -75,6 +80,8 @@ This project automatically loads a `.env` file in the project root (via `dotenv`
    echo 'JWT_ALG=RS256' >> .env
    echo 'JWT_PRIVATE_KEY_FILE=./jwt-private.pem' >> .env
    echo 'JWT_CERT_FILE=./jwt-cert.pem' >> .env
+   # Optional: set an audience claim
+   echo 'JWT_AUDIENCE=my-audience' >> .env
    ```
 
 Then simply run:

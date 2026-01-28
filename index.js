@@ -8,6 +8,7 @@ require('dotenv').config();
 function generateJwt() {
   const subject = nanoid();
   const issuer = process.env.JWT_ISSUER || 'jwt-generator';
+  const audience = process.env.JWT_AUDIENCE;
 
   // Choose algorithm: HS256 (shared secret) or RS256 (private key + X.509 cert)
   const algorithm = process.env.JWT_ALG || 'HS256';
@@ -39,22 +40,24 @@ function generateJwt() {
     throw new Error(`Unsupported JWT_ALG: ${algorithm}`);
   }
 
-  const token = jwt.sign(
-    {
-      sub: subject,
-      iat: Math.floor(Date.now() / 1000),
-      iss: issuer,
-    },
-    signingKey,
-    {
-      algorithm,
-      expiresIn: '1h',
-    },
-  );
+  const payload = {
+    sub: subject,
+    iat: Math.floor(Date.now() / 1000),
+    iss: issuer,
+  };
+
+  if (audience) {
+    payload.aud = audience;
+  }
+
+  const token = jwt.sign(payload, signingKey, {
+    algorithm,
+    expiresIn: '1h',
+  });
 
   const decoded = jwt.decode(token, { complete: true });
 
-  return {
+  const result = {
     token,
     subject,
     issuer,
@@ -62,6 +65,12 @@ function generateJwt() {
     decoded,
     ...meta,
   };
+
+  if (audience) {
+    result.audience = audience;
+  }
+
+  return result;
 }
 
 function main() {
