@@ -58,6 +58,31 @@ The other system should verify the token using:
 - `HS256` algorithm
 - the same shared secret (`JWT_SECRET`)
 
+### Using a .env file
+
+This project automatically loads a `.env` file in the project root (via `dotenv`) so you don’t have to prefix every command with environment variables.
+
+1. For HS256 (shared secret), create a `.env` file:
+
+   ```bash
+   echo 'JWT_ALG=HS256' >> .env
+   echo 'JWT_SECRET=my-shared-secret' >> .env
+   ```
+
+2. For RS256, you can also configure everything in `.env`:
+
+   ```bash
+   echo 'JWT_ALG=RS256' >> .env
+   echo 'JWT_PRIVATE_KEY_FILE=./jwt-private.pem' >> .env
+   echo 'JWT_CERT_FILE=./jwt-cert.pem' >> .env
+   ```
+
+Then simply run:
+
+```bash
+pnpm start
+```
+
 ### Using RS256 with a private key and X.509 certificate
 
 Some systems prefer (or require) validating JWTs using an X.509 certificate containing the public key used to verify signatures. In that case, you can switch this tool to use an asymmetric key pair and `RS256`:

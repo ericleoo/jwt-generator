@@ -3,6 +3,7 @@
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const { nanoid } = require('nanoid');
+require('dotenv').config();
 
 function generateJwt() {
   const subject = nanoid();
