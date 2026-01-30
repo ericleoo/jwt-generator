@@ -10,6 +10,7 @@ function generateJwt() {
   const issuer = process.env.JWT_ISSUER || 'jwt-generator';
   const audience = process.env.JWT_AUDIENCE;
   const customClaimsRaw = process.env.JWT_CUSTOM_CLAIMS;
+  const expiresIn = process.env.JWT_EXPIRES_IN || '1h';
 
   // Choose algorithm: HS256 (shared secret) or RS256 (private key + X.509 cert)
   const algorithm = process.env.JWT_ALG || 'HS256';
@@ -67,7 +68,7 @@ function generateJwt() {
 
   const token = jwt.sign(payload, signingKey, {
     algorithm,
-    expiresIn: '1h',
+    expiresIn,
   });
 
   const decoded = jwt.decode(token, { complete: true });

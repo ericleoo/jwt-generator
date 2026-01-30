@@ -15,7 +15,7 @@ pnpm install
 
 ### Generate a JWT (default HS256 / shared secret)
 
-This will print a JSON object with the random subject, issuer, JWT token, algorithm, secret, and the fully decoded token (header, payload, and signature). If `JWT_ISSUER` is set, it will override the default issuer (`jwt-generator`). If `JWT_AUDIENCE` is set, the audience will also be included. You can also inject additional custom claims by setting `JWT_CUSTOM_CLAIMS` to a JSON object string.
+This will print a JSON object with the random subject, issuer, JWT token, algorithm, secret, and the fully decoded token (header, payload, and signature). By default the token expires after 1 hour, but this is configurable. If `JWT_ISSUER` is set, it will override the default issuer (`jwt-generator`). If `JWT_AUDIENCE` is set, the audience will also be included. You can also inject additional custom claims by setting `JWT_CUSTOM_CLAIMS` to a JSON object string.
 
 ```bash
 pnpm start
@@ -71,13 +71,16 @@ You can optionally fix the subject claim instead of using a random value by sett
    ```bash
    echo 'JWT_ALG=HS256' >> .env
    echo 'JWT_ISSUER=my-issuer' >> .env
-   echo 'JWT_SECRET=my-shared-secret' >> .env
-   # Optional: set a fixed subject claim
-   echo 'JWT_SUBJECT=my-subject' >> .env
-   # Optional: set an audience claim
-   echo 'JWT_AUDIENCE=my-audience' >> .env
-   # Optional: set additional custom claims (as JSON)
-   echo 'JWT_CUSTOM_CLAIMS={"role":"admin","env":"test"}' >> .env
+    echo 'JWT_SECRET=my-shared-secret' >> .env
+    # Optional: set a fixed subject claim
+    echo 'JWT_SUBJECT=my-subject' >> .env
+    # Optional: set an audience claim
+    echo 'JWT_AUDIENCE=my-audience' >> .env
+    # Optional: set additional custom claims (as JSON)
+    echo 'JWT_CUSTOM_CLAIMS={"role":"admin","env":"test"}' >> .env
+    # Optional: configure token lifetime (default: 1h)
+    # Supports jsonwebtoken "expiresIn" syntax, e.g. 600, 10m, 2h, 1d
+    echo 'JWT_EXPIRES_IN=1h' >> .env
    ```
 
 2. For RS256, you can also configure everything in `.env`:
@@ -85,13 +88,16 @@ You can optionally fix the subject claim instead of using a random value by sett
    ```bash
    echo 'JWT_ALG=RS256' >> .env
    echo 'JWT_PRIVATE_KEY_FILE=./jwt-private.pem' >> .env
-   echo 'JWT_CERT_FILE=./jwt-cert.pem' >> .env
-   # Optional: set a fixed subject claim
-   echo 'JWT_SUBJECT=my-subject' >> .env
-   # Optional: set an audience claim
-   echo 'JWT_AUDIENCE=my-audience' >> .env
-   # Optional: set additional custom claims (as JSON)
-   echo 'JWT_CUSTOM_CLAIMS={"role":"admin","tier":"gold"}' >> .env
+    echo 'JWT_CERT_FILE=./jwt-cert.pem' >> .env
+    # Optional: set a fixed subject claim
+    echo 'JWT_SUBJECT=my-subject' >> .env
+    # Optional: set an audience claim
+    echo 'JWT_AUDIENCE=my-audience' >> .env
+    # Optional: set additional custom claims (as JSON)
+    echo 'JWT_CUSTOM_CLAIMS={"role":"admin","tier":"gold"}' >> .env
+    # Optional: configure token lifetime (default: 1h)
+    # Supports jsonwebtoken "expiresIn" syntax, e.g. 600, 10m, 2h, 1d
+    echo 'JWT_EXPIRES_IN=1h' >> .env
    ```
 
 Then simply run:
