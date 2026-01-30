@@ -15,7 +15,7 @@ pnpm install
 
 ### Generate a JWT (default HS256 / shared secret)
 
-This will print a JSON object with the random subject, issuer, JWT token, algorithm, secret, and the fully decoded token (header, payload, and signature). If `JWT_ISSUER` is set, it will override the default issuer (`jwt-generator`). If `JWT_AUDIENCE` is set, the audience will also be included.
+This will print a JSON object with the random subject, issuer, JWT token, algorithm, secret, and the fully decoded token (header, payload, and signature). If `JWT_ISSUER` is set, it will override the default issuer (`jwt-generator`). If `JWT_AUDIENCE` is set, the audience will also be included. You can also inject additional custom claims by setting `JWT_CUSTOM_CLAIMS` to a JSON object string.
 
 ```bash
 pnpm start
@@ -76,6 +76,8 @@ You can optionally fix the subject claim instead of using a random value by sett
    echo 'JWT_SUBJECT=my-subject' >> .env
    # Optional: set an audience claim
    echo 'JWT_AUDIENCE=my-audience' >> .env
+   # Optional: set additional custom claims (as JSON)
+   echo 'JWT_CUSTOM_CLAIMS={"role":"admin","env":"test"}' >> .env
    ```
 
 2. For RS256, you can also configure everything in `.env`:
@@ -88,6 +90,8 @@ You can optionally fix the subject claim instead of using a random value by sett
    echo 'JWT_SUBJECT=my-subject' >> .env
    # Optional: set an audience claim
    echo 'JWT_AUDIENCE=my-audience' >> .env
+   # Optional: set additional custom claims (as JSON)
+   echo 'JWT_CUSTOM_CLAIMS={"role":"admin","tier":"gold"}' >> .env
    ```
 
 Then simply run:
@@ -95,6 +99,16 @@ Then simply run:
 ```bash
 pnpm start
 ```
+
+### Custom claims via `JWT_CUSTOM_CLAIMS`
+
+You can attach arbitrary additional claims to the JWT payload by setting the `JWT_CUSTOM_CLAIMS` environment variable to a JSON object string. For example:
+
+```bash
+JWT_CUSTOM_CLAIMS='{"role":"admin","env":"test"}' pnpm start
+```
+
+Those keys will be merged into the payload alongside the standard claims (`sub`, `iat`, `iss`, and optional `aud`). Reserved claims from this tool are not overridden by `JWT_CUSTOM_CLAIMS`. If the value cannot be parsed as a JSON object, an error is printed and the token is generated without those custom claims.
 
 ### Using RS256 with a private key and X.509 certificate
 

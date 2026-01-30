@@ -9,6 +9,7 @@ function generateJwt() {
   const subject = process.env.JWT_SUBJECT || nanoid();
   const issuer = process.env.JWT_ISSUER || 'jwt-generator';
   const audience = process.env.JWT_AUDIENCE;
+  const customClaimsRaw = process.env.JWT_CUSTOM_CLAIMS;
 
   // Choose algorithm: HS256 (shared secret) or RS256 (private key + X.509 cert)
   const algorithm = process.env.JWT_ALG || 'HS256';
@@ -40,11 +41,25 @@ function generateJwt() {
     throw new Error(`Unsupported JWT_ALG: ${algorithm}`);
   }
 
-  const payload = {
-    sub: subject,
-    iat: Math.floor(Date.now() / 1000),
-    iss: issuer,
-  };
+  const payload = {};
+
+  // Attach any custom claims first so reserved claims below cannot be overridden.
+  if (customClaimsRaw) {
+    try {
+      const customClaims = JSON.parse(customClaimsRaw);
+      if (customClaims && typeof customClaims === 'object' && !Array.isArray(customClaims)) {
+        Object.assign(payload, customClaims);
+      } else {
+        console.error('JWT_CUSTOM_CLAIMS must be a JSON object');
+      }
+    } catch (err) {
+      console.error(`Failed to parse JWT_CUSTOM_CLAIMS: ${err.message}`);
+    }
+  }
+
+  payload.sub = subject;
+  payload.iat = Math.floor(Date.now() / 1000);
+  payload.iss = issuer;
 
   if (audience) {
     payload.aud = audience;
